@@ -21,9 +21,27 @@ endif()
 
 # Dependencies
 include(FetchContent)
+
+# --- fastcat / jsd source selection -----------------------------------------
+# The EL1259 support lives in the mat-kie forks of fastcat and jsd (el1259
+# branch), NOT in nasa-jpl upstream. Prefer the local fork checkouts under the
+# workspace's deps/ so live edits compile; otherwise clone the forks' el1259
+# branch. An explicit -DFETCHCONTENT_SOURCE_DIR_* is always respected.
+# (Setting FETCHCONTENT_SOURCE_DIR_JSD here also redirects the jsd that fastcat
+#  pulls, regardless of fastcat's own GIT_REPOSITORY.)
+get_filename_component(_fcat_ws_deps "${CMAKE_CURRENT_SOURCE_DIR}/../../../deps" ABSOLUTE)
+if(NOT FETCHCONTENT_SOURCE_DIR_FASTCAT AND EXISTS "${_fcat_ws_deps}/fastcat/CMakeLists.txt")
+  message(STATUS "fcat: using local fastcat fork at ${_fcat_ws_deps}/fastcat")
+  set(FETCHCONTENT_SOURCE_DIR_FASTCAT "${_fcat_ws_deps}/fastcat" CACHE PATH "local fastcat fork" FORCE)
+endif()
+if(NOT FETCHCONTENT_SOURCE_DIR_JSD AND EXISTS "${_fcat_ws_deps}/jsd/CMakeLists.txt")
+  message(STATUS "fcat: using local jsd fork at ${_fcat_ws_deps}/jsd")
+  set(FETCHCONTENT_SOURCE_DIR_JSD "${_fcat_ws_deps}/jsd" CACHE PATH "local jsd fork" FORCE)
+endif()
+
 FetchContent_Declare(fastcat
-  GIT_REPOSITORY https://github.com/nasa-jpl/fastcat.git
-  GIT_TAG v0.13.15
+  GIT_REPOSITORY https://github.com/mat-kie/fastcat.git
+  GIT_TAG el1259
 )
 FetchContent_MakeAvailable(fastcat)
 
