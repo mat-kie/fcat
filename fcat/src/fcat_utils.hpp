@@ -12,6 +12,7 @@
 #include "fcat_msgs/msg/conditional_states.hpp"
 #include "fcat_msgs/msg/egd_states.hpp"
 #include "fcat_msgs/msg/el1008_states.hpp"
+#include "fcat_msgs/msg/el1259_states.hpp"
 #include "fcat_msgs/msg/el2124_states.hpp"
 #include "fcat_msgs/msg/el2798_states.hpp"
 #include "fcat_msgs/msg/el2809_states.hpp"
@@ -42,6 +43,8 @@ fcat_msgs::msg::ActuatorState ActuatorStateToMsg(std::shared_ptr<const fastcat::
 fcat_msgs::msg::EgdState EgdStateToMsg(std::shared_ptr<const fastcat::DeviceState> state);
 
 fcat_msgs::msg::El1008State El1008StateToMsg(std::shared_ptr<const fastcat::DeviceState> state);
+
+fcat_msgs::msg::El1259State El1259StateToMsg(std::shared_ptr<const fastcat::DeviceState> state);
 
 fcat_msgs::msg::El2124State El2124StateToMsg(std::shared_ptr<const fastcat::DeviceState> state);
 

@@ -779,6 +779,17 @@ void Fcat::InitializePublishersAndMessages() {
     el1008_states_msg_.states.resize(vec_state_ptrs.size());
   }
 
+  // El1259
+  vec_state_ptrs = device_type_vec_map_[fastcat::EL1259_STATE];
+  if (vec_state_ptrs.size() > 0) {
+    RCLCPP_INFO(this->get_logger(), "Creating El1259 pub");
+    el1259_pub_ =
+        this->create_publisher<fcat_msgs::msg::El1259States>("state/el1259s", qos_profile);
+
+    el1259_states_msg_.names.resize(vec_state_ptrs.size());
+    el1259_states_msg_.states.resize(vec_state_ptrs.size());
+  }
+
   // El2124
   vec_state_ptrs = device_type_vec_map_[fastcat::EL2124_STATE];
   if (vec_state_ptrs.size() > 0) {
@@ -1194,6 +1205,17 @@ void Fcat::InitializeSubscribers() {
         std::bind(&Fcat::CommanderDisableCmdCb, this, _1), options));
   }
 
+  // El1259
+  if (TypeExistsOnBus(fastcat::EL1259_STATE)) {
+    subscriptions_.push_back(this->create_subscription<fcat_msgs::msg::El1259WriteAllChannelsCmd>(
+        "impl/el1259_write_all_channels", subscription_queue_size_,
+        std::bind(&Fcat::El1259WriteAllChannelsCmdCb, this, _1), options));
+
+    subscriptions_.push_back(this->create_subscription<fcat_msgs::msg::El1259WriteChannelCmd>(
+        "impl/el1259_write_channel", subscription_queue_size_,
+        std::bind(&Fcat::El1259WriteChannelCmdCb, this, _1), options));
+  }
+
   // El2124
   if (TypeExistsOnBus(fastcat::EL2124_STATE)) {
     subscriptions_.push_back(this->create_subscription<fcat_msgs::msg::El2124WriteAllChannelsCmd>(
@@ -1333,6 +1355,17 @@ void Fcat::InitializeServices() {
         "cmd/commander_disable", std::bind(&Fcat::CommanderDisableSrvCb, this, _1, _2),
         service_qos_));
   }  // end Commander Service Declarations
+
+  // El1259
+  if (TypeExistsOnBus(fastcat::EL1259_STATE)) {
+    services_.push_back(this->create_service<fcat_msgs::srv::El1259WriteAllChannelsService>(
+        "cmd/el1259_write_all_channels",
+        std::bind(&Fcat::El1259WriteAllChannelsSrvCb, this, _1, _2), service_qos_));
+
+    services_.push_back(this->create_service<fcat_msgs::srv::El1259WriteChannelService>(
+        "cmd/el1259_write_channel", std::bind(&Fcat::El1259WriteChannelSrvCb, this, _1, _2),
+        service_qos_));
+  }  // end El1259 Service Declarations
 
   // El2124
   if (TypeExistsOnBus(fastcat::EL2124_STATE)) {
@@ -1538,6 +1571,7 @@ void Fcat::Process() {
   PublishActuatorStates();
   PublishEgdStates();
   PublishEl1008States();
+  PublishEl1259States();
   PublishEl2124States();
   PublishEl2809States();
   PublishEl2798States();
@@ -1763,6 +1797,21 @@ void Fcat::PublishEl1008States() {
       index++;
     }
     el1008_pub_->publish(el1008_states_msg_);
+  }
+}
+
+void Fcat::PublishEl1259States() {
+  auto state_vec = device_type_vec_map_[fastcat::EL1259_STATE];
+  if (state_vec.size() > 0) {
+    size_t index = 0;
+
+    el1259_states_msg_.header.stamp = publish_time_stamp_;
+    for (auto state_ptr = state_vec.begin(); state_ptr != state_vec.end(); state_ptr++) {
+      el1259_states_msg_.names[index] = (*state_ptr)->name;
+      el1259_states_msg_.states[index] = El1259StateToMsg(*state_ptr);
+      index++;
+    }
+    el1259_pub_->publish(el1259_states_msg_);
   }
 }
 

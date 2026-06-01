@@ -372,6 +372,37 @@ void Fcat::CommanderDisableCmdCb(const std::shared_ptr<fcat_msgs::msg::Commander
   }
 }
 
+void Fcat::El1259WriteAllChannelsCmdCb(
+    const std::shared_ptr<fcat_msgs::msg::El1259WriteAllChannelsCmd> msg) {
+  fastcat::DeviceCmd cmd;
+  cmd.name = msg->name;
+  cmd.type = fastcat::EL1259_WRITE_ALL_CHANNELS_CMD;
+  cmd.el1259_write_all_channels_cmd.channel_ch1 = msg->channel_ch1;
+  cmd.el1259_write_all_channels_cmd.channel_ch2 = msg->channel_ch2;
+  cmd.el1259_write_all_channels_cmd.channel_ch3 = msg->channel_ch3;
+  cmd.el1259_write_all_channels_cmd.channel_ch4 = msg->channel_ch4;
+  cmd.el1259_write_all_channels_cmd.channel_ch5 = msg->channel_ch5;
+  cmd.el1259_write_all_channels_cmd.channel_ch6 = msg->channel_ch6;
+  cmd.el1259_write_all_channels_cmd.channel_ch7 = msg->channel_ch7;
+  cmd.el1259_write_all_channels_cmd.channel_ch8 = msg->channel_ch8;
+
+  if (DeviceExistsOnBus(cmd.name, fastcat::EL1259_STATE)) {
+    QueueCommand(cmd);
+  }
+}
+void Fcat::El1259WriteChannelCmdCb(
+    const std::shared_ptr<fcat_msgs::msg::El1259WriteChannelCmd> msg) {
+  fastcat::DeviceCmd cmd;
+  cmd.name = msg->name;
+  cmd.type = fastcat::EL1259_WRITE_CHANNEL_CMD;
+  cmd.el1259_write_channel_cmd.channel = msg->channel;
+  cmd.el1259_write_channel_cmd.level = msg->level;
+
+  if (DeviceExistsOnBus(cmd.name, fastcat::EL1259_STATE)) {
+    QueueCommand(cmd);
+  }
+}
+
 void Fcat::El2124WriteAllChannelsCmdCb(
     const std::shared_ptr<fcat_msgs::msg::El2124WriteAllChannelsCmd> msg) {
   fastcat::DeviceCmd cmd;
@@ -755,6 +786,46 @@ void Fcat::CommanderDisableSrvCb(
   cmd.type = fastcat::COMMANDER_DISABLE_CMD;
 
   response->success = DeviceExistsOnBus(cmd.name, fastcat::COMMANDER_STATE, response->message);
+  if (response->success) {
+    QueueCommand(cmd);
+  }
+}
+
+void Fcat::El1259WriteAllChannelsSrvCb(
+    const std::shared_ptr<fcat_msgs::srv::El1259WriteAllChannelsService::Request> request,
+    std::shared_ptr<fcat_msgs::srv::El1259WriteAllChannelsService::Response> response) {
+  RCLCPP_INFO(this->get_logger(), "Handling EL1259 Write All Channels Command");
+  fastcat::DeviceCmd cmd;
+
+  cmd.name = request->name;
+  cmd.type = fastcat::EL1259_WRITE_ALL_CHANNELS_CMD;
+  cmd.el1259_write_all_channels_cmd.channel_ch1 = request->channel_ch1;
+  cmd.el1259_write_all_channels_cmd.channel_ch2 = request->channel_ch2;
+  cmd.el1259_write_all_channels_cmd.channel_ch3 = request->channel_ch3;
+  cmd.el1259_write_all_channels_cmd.channel_ch4 = request->channel_ch4;
+  cmd.el1259_write_all_channels_cmd.channel_ch5 = request->channel_ch5;
+  cmd.el1259_write_all_channels_cmd.channel_ch6 = request->channel_ch6;
+  cmd.el1259_write_all_channels_cmd.channel_ch7 = request->channel_ch7;
+  cmd.el1259_write_all_channels_cmd.channel_ch8 = request->channel_ch8;
+
+  response->success = DeviceExistsOnBus(cmd.name, fastcat::EL1259_STATE, response->message);
+  if (response->success) {
+    QueueCommand(cmd);
+  }
+}
+
+void Fcat::El1259WriteChannelSrvCb(
+    const std::shared_ptr<fcat_msgs::srv::El1259WriteChannelService::Request> request,
+    std::shared_ptr<fcat_msgs::srv::El1259WriteChannelService::Response> response) {
+  RCLCPP_INFO(this->get_logger(), "Handling EL1259 Write Channel Command");
+  fastcat::DeviceCmd cmd;
+
+  cmd.name = request->name;
+  cmd.type = fastcat::EL1259_WRITE_CHANNEL_CMD;
+  cmd.el1259_write_channel_cmd.channel = request->channel;
+  cmd.el1259_write_channel_cmd.level = request->level;
+
+  response->success = DeviceExistsOnBus(cmd.name, fastcat::EL1259_STATE, response->message);
   if (response->success) {
     QueueCommand(cmd);
   }

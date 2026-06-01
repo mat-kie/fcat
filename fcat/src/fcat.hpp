@@ -36,6 +36,8 @@
 #include "fcat_msgs/srv/commander_disable_service.hpp"
 #include "fcat_msgs/srv/commander_enable_service.hpp"
 #include "fcat_msgs/srv/device_trigger_service.hpp"
+#include "fcat_msgs/srv/el1259_write_all_channels_service.hpp"
+#include "fcat_msgs/srv/el1259_write_channel_service.hpp"
 #include "fcat_msgs/srv/el2124_write_all_channels_service.hpp"
 #include "fcat_msgs/srv/el2124_write_channel_service.hpp"
 #include "fcat_msgs/srv/el2798_write_all_channels_service.hpp"
@@ -72,6 +74,8 @@
 #include "fcat_msgs/msg/async_sdo_write_cmd.hpp"
 #include "fcat_msgs/msg/commander_disable_cmd.hpp"
 #include "fcat_msgs/msg/commander_enable_cmd.hpp"
+#include "fcat_msgs/msg/el1259_write_all_channels_cmd.hpp"
+#include "fcat_msgs/msg/el1259_write_channel_cmd.hpp"
 #include "fcat_msgs/msg/el2124_write_all_channels_cmd.hpp"
 #include "fcat_msgs/msg/el2124_write_channel_cmd.hpp"
 #include "fcat_msgs/msg/el2798_write_all_channels_cmd.hpp"
@@ -140,6 +144,7 @@ class Fcat : public FcatNode {
   void PublishActuatorStates();
   void PublishEgdStates();
   void PublishEl1008States();
+  void PublishEl1259States();
   void PublishEl2124States();
   void PublishEl2809States();
   void PublishEl2798States();
@@ -210,6 +215,10 @@ class Fcat : public FcatNode {
   void CommanderEnableCmdCb(const std::shared_ptr<fcat_msgs::msg::CommanderEnableCmd> msg);
   void CommanderDisableCmdCb(const std::shared_ptr<fcat_msgs::msg::CommanderDisableCmd> msg);
 
+  void El1259WriteAllChannelsCmdCb(
+      const std::shared_ptr<fcat_msgs::msg::El1259WriteAllChannelsCmd> msg);
+  void El1259WriteChannelCmdCb(const std::shared_ptr<fcat_msgs::msg::El1259WriteChannelCmd> msg);
+
   void El2124WriteAllChannelsCmdCb(
       const std::shared_ptr<fcat_msgs::msg::El2124WriteAllChannelsCmd> msg);
   void El2124WriteChannelCmdCb(const std::shared_ptr<fcat_msgs::msg::El2124WriteChannelCmd> msg);
@@ -253,6 +262,7 @@ class Fcat : public FcatNode {
   rclcpp::Publisher<fcat_msgs::msg::ActuatorStates>::SharedPtr actuator_pub_;
   rclcpp::Publisher<fcat_msgs::msg::EgdStates>::SharedPtr egd_pub_;
   rclcpp::Publisher<fcat_msgs::msg::El1008States>::SharedPtr el1008_pub_;
+  rclcpp::Publisher<fcat_msgs::msg::El1259States>::SharedPtr el1259_pub_;
   rclcpp::Publisher<fcat_msgs::msg::El2124States>::SharedPtr el2124_pub_;
   rclcpp::Publisher<fcat_msgs::msg::El2809States>::SharedPtr el2809_pub_;
   rclcpp::Publisher<fcat_msgs::msg::El2798States>::SharedPtr el2798_pub_;
@@ -344,6 +354,14 @@ class Fcat : public FcatNode {
   void CommanderDisableSrvCb(
       const std::shared_ptr<fcat_msgs::srv::CommanderDisableService::Request> request,
       std::shared_ptr<fcat_msgs::srv::CommanderDisableService::Response> response);
+
+  void El1259WriteAllChannelsSrvCb(
+      const std::shared_ptr<fcat_msgs::srv::El1259WriteAllChannelsService::Request> request,
+      std::shared_ptr<fcat_msgs::srv::El1259WriteAllChannelsService::Response> response);
+
+  void El1259WriteChannelSrvCb(
+      const std::shared_ptr<fcat_msgs::srv::El1259WriteChannelService::Request> request,
+      std::shared_ptr<fcat_msgs::srv::El1259WriteChannelService::Response> response);
 
   void El2124WriteAllChannelsSrvCb(
       const std::shared_ptr<fcat_msgs::srv::El2124WriteAllChannelsService::Request> request,
@@ -444,6 +462,7 @@ class Fcat : public FcatNode {
   fcat_msgs::msg::ActuatorStates actuator_states_msg_;
   fcat_msgs::msg::EgdStates egd_states_msg_;
   fcat_msgs::msg::El1008States el1008_states_msg_;
+  fcat_msgs::msg::El1259States el1259_states_msg_;
   fcat_msgs::msg::El2124States el2124_states_msg_;
   fcat_msgs::msg::El2809States el2809_states_msg_;
   fcat_msgs::msg::El2798States el2798_states_msg_;

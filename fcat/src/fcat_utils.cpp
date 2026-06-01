@@ -126,6 +126,30 @@ fcat_msgs::msg::El1008State El1008StateToMsg(std::shared_ptr<const fastcat::Devi
   return msg;
 }
 
+fcat_msgs::msg::El1259State El1259StateToMsg(std::shared_ptr<const fastcat::DeviceState> state) {
+  auto msg = fcat_msgs::msg::El1259State();
+
+  msg.read_time  = state->time;
+  msg.input_ch1  = state->el1259_state.input_ch1;
+  msg.input_ch2  = state->el1259_state.input_ch2;
+  msg.input_ch3  = state->el1259_state.input_ch3;
+  msg.input_ch4  = state->el1259_state.input_ch4;
+  msg.input_ch5  = state->el1259_state.input_ch5;
+  msg.input_ch6  = state->el1259_state.input_ch6;
+  msg.input_ch7  = state->el1259_state.input_ch7;
+  msg.input_ch8  = state->el1259_state.input_ch8;
+  msg.output_ch1 = state->el1259_state.output_ch1;
+  msg.output_ch2 = state->el1259_state.output_ch2;
+  msg.output_ch3 = state->el1259_state.output_ch3;
+  msg.output_ch4 = state->el1259_state.output_ch4;
+  msg.output_ch5 = state->el1259_state.output_ch5;
+  msg.output_ch6 = state->el1259_state.output_ch6;
+  msg.output_ch7 = state->el1259_state.output_ch7;
+  msg.output_ch8 = state->el1259_state.output_ch8;
+
+  return msg;
+}
+
 fcat_msgs::msg::El2124State El2124StateToMsg(std::shared_ptr<const fastcat::DeviceState> state) {
   auto msg = fcat_msgs::msg::El2124State();
 

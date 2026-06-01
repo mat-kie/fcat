@@ -1,0 +1,17 @@
+float64 read_time
+uint8 input_ch1
+uint8 input_ch2
+uint8 input_ch3
+uint8 input_ch4
+uint8 input_ch5
+uint8 input_ch6
+uint8 input_ch7
+uint8 input_ch8
+uint8 output_ch1
+uint8 output_ch2
+uint8 output_ch3
+uint8 output_ch4
+uint8 output_ch5
+uint8 output_ch6
+uint8 output_ch7
+uint8 output_ch8
